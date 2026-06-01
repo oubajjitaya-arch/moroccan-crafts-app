@@ -4,7 +4,7 @@ import { MapPin, ArrowLeft, Users, Star, MessageCircle } from 'lucide-react';
 import { cities } from '../data/cities';
 
 export default function CityDetails() {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams();
   const city = cities.find(c => c.id === id);
 
   if (!city) {
@@ -15,12 +15,7 @@ export default function CityDetails() {
     <div className="bg-gray-50 min-h-screen pb-20">
       {/* Hero Section */}
       <div className="relative h-[50vh] min-h-[400px] w-full">
-        <img 
-          src={city.image} 
-          alt={city.name} 
-          className="w-full h-full object-cover"
-          referrerPolicy="no-referrer"
-        />
+        <img src={city.image} alt={city.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
         
         <div className="absolute top-6 left-6 z-10">
@@ -37,9 +32,7 @@ export default function CityDetails() {
               <span className="text-white/90 text-lg">{city.craft}</span>
             </div>
             <h1 className="text-5xl md:text-7xl font-bold text-white mb-4">{city.name}</h1>
-            <p className="text-xl text-white/80 max-w-2xl leading-relaxed">
-              {city.description}
-            </p>
+            <p className="text-xl text-white/80 max-w-2xl leading-relaxed">{city.description}</p>
           </div>
         </div>
       </div>
@@ -53,18 +46,14 @@ export default function CityDetails() {
             <div className="md:col-span-2 space-y-8">
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">À propos de l'artisanat à {city.name}</h2>
-                <p className="text-gray-600 leading-relaxed text-lg">
-                  {city.details}
-                </p>
+                <p className="text-gray-600 leading-relaxed text-lg">{city.details}</p>
               </div>
 
               <div>
                 <h3 className="text-xl font-bold text-gray-900 mb-4">Spécialités locales</h3>
                 <div className="flex flex-wrap gap-3">
                   {city.popularCrafts.map(craft => (
-                    <span key={craft} className="bg-rose-50 text-primary px-4 py-2 rounded-full text-sm font-medium border border-rose-100">
-                      {craft}
-                    </span>
+                    <span key={craft} className="bg-rose-50 text-primary px-4 py-2 rounded-full text-sm font-medium border border-rose-100">{craft}</span>
                   ))}
                 </div>
               </div>

@@ -23,7 +23,7 @@ export default function Login() {
     setError('');
   }, [searchParams, user, navigate]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
@@ -45,7 +45,7 @@ export default function Login() {
 
       login(data.token, data.user);
       navigate('/');
-    } catch (err: any) {
+    } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
@@ -56,12 +56,8 @@ export default function Login() {
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12 bg-gray-50">
       <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 border border-gray-100">
         <div className="text-center mb-8">
-          <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white font-bold text-2xl mx-auto mb-4">
-            A
-          </div>
-          <h2 className="text-3xl font-bold text-gray-900">
-            {isRegister ? 'Créer un compte' : 'Bon retour'}
-          </h2>
+          <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white font-bold text-2xl mx-auto mb-4">A</div>
+          <h2 className="text-3xl font-bold text-gray-900">{isRegister ? 'Créer un compte' : 'Bon retour'}</h2>
           <p className="text-gray-500 mt-2">
             {isRegister 
               ? 'Rejoignez notre communauté d\'artisans et de passionnés' 
@@ -70,17 +66,13 @@ export default function Login() {
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-600 rounded-md text-sm">
-            {error}
-          </div>
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-600 rounded-md text-sm">{error}</div>
         )}
 
         <form className="space-y-6" onSubmit={handleSubmit}>
           {isRegister && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Nom complet
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Nom complet</label>
               <input 
                 type="text" 
                 required
@@ -93,9 +85,7 @@ export default function Login() {
           )}
           
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Adresse email
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Adresse email</label>
             <input 
               type="email" 
               required
@@ -108,13 +98,9 @@ export default function Login() {
 
           <div>
             <div className="flex items-center justify-between mb-1">
-              <label className="block text-sm font-medium text-gray-700">
-                Mot de passe
-              </label>
+              <label className="block text-sm font-medium text-gray-700">Mot de passe</label>
               {!isRegister && (
-                <a href="#" className="text-sm text-primary hover:text-primary-hover">
-                  Mot de passe oublié ?
-                </a>
+                <a href="#" className="text-sm text-primary hover:text-primary-hover">Mot de passe oublié ?</a>
               )}
             </div>
             <input 
@@ -129,9 +115,7 @@ export default function Login() {
 
           {isRegister && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Je suis un...
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Je suis un...</label>
               <select 
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
@@ -156,16 +140,12 @@ export default function Login() {
           {isRegister ? (
             <p>
               Vous avez déjà un compte ?{' '}
-              <Link to="/login" className="text-primary font-medium hover:underline">
-                Se connecter
-              </Link>
+              <Link to="/login" className="text-primary font-medium hover:underline">Se connecter</Link>
             </p>
           ) : (
             <p>
               Pas encore de compte ?{' '}
-              <Link to="/login?mode=register" className="text-primary font-medium hover:underline">
-                S'inscrire
-              </Link>
+              <Link to="/login?mode=register" className="text-primary font-medium hover:underline">S'inscrire</Link>
             </p>
           )}
         </div>

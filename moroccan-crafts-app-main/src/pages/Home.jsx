@@ -77,9 +77,7 @@ function CitiesSection() {
         <p className="text-primary font-bold tracking-widest text-sm uppercase mb-3">
           Explorer
         </p>
-        <h2 className="text-4xl font-bold text-gray-900 mb-6">
-          Villes Artisanales
-        </h2>
+        <h2 className="text-4xl font-bold text-gray-900 mb-6">Villes Artisanales</h2>
         <p className="text-gray-600 max-w-2xl mx-auto">
           Chaque ville marocaine possède son propre héritage artisanal unique, 
           transmis de génération en génération.
@@ -106,9 +104,7 @@ function CitiesSection() {
               </div>
             </div>
             <div className="p-6 flex flex-col flex-grow">
-              <p className="text-gray-600 text-sm leading-relaxed mb-6 flex-grow line-clamp-3">
-                {city.description}
-              </p>
+              <p className="text-gray-600 text-sm leading-relaxed mb-6 flex-grow line-clamp-3">{city.description}</p>
               <span className="inline-flex items-center text-primary font-medium group-hover:text-primary-hover transition-colors group/link">
                 Voir toutes les villes
                 <ChevronRight className="w-4 h-4 ml-1 group-hover/link:translate-x-1 transition-transform" />
