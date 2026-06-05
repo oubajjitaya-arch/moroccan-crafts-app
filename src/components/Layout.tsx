@@ -1,11 +1,25 @@
-import React from 'react';
-import { Outlet, Link, useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LogOut, User } from 'lucide-react';
+import { useCart } from '../context/CartContext';
+import { LogOut, User, ShoppingCart } from 'lucide-react';
 
 function Navbar() {
   const { user, logout } = useAuth();
+  const { cartCount } = useCart();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash === '#boutique') {
+      const el = document.getElementById('boutique');
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }
+    }
+  }, [location]);
 
   const handleLogout = () => {
     logout();
@@ -22,32 +36,69 @@ function Navbar() {
       </Link>
       <div className="hidden md:flex items-center gap-8">
         <Link to="/" className="text-gray-900 font-medium hover:text-primary transition-colors">Accueil</Link>
-        <Link to="/villes" className="text-gray-500 hover:text-primary transition-colors">Villes</Link>
+        <Link 
+          to="/#boutique"
+          onClick={(e) => {
+            if (location.pathname === '/') {
+              const el = document.getElementById('boutique');
+              if (el) {
+                e.preventDefault();
+                el.scrollIntoView({ behavior: 'smooth' });
+                // Optional: update URL hash without refreshing
+                window.history.pushState(null, '', '/#boutique');
+              }
+            }
+          }}
+          className="text-gray-500 font-medium hover:text-primary transition-colors"
+        >
+          Boutique Artisanale
+        </Link>
+        <Link to="/villes" className="text-gray-500 font-medium hover:text-primary transition-colors">Villes</Link>
         
-        {user ? (
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 text-gray-700">
-              <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-600">
-                <User className="w-4 h-4" />
-              </div>
-              <span className="font-medium">{user.name}</span>
-            </div>
-            <button 
-              onClick={handleLogout}
-              className="text-gray-500 hover:text-primary transition-colors flex items-center gap-1"
-              title="Se déconnecter"
-            >
-              <LogOut className="w-5 h-5" />
-            </button>
-          </div>
-        ) : (
-          <>
-            <Link to="/login" className="text-gray-500 hover:text-primary transition-colors">Connexion</Link>
-            <Link to="/login?mode=register" className="bg-primary hover:bg-primary-hover text-white px-6 py-2.5 rounded-md font-medium transition-colors">
-              S'inscrire
+        <div className="flex items-center gap-6 pl-4 border-l border-gray-200">
+          {(user && user.role === 'client') && (
+            <Link to="/cart" className="relative text-gray-500 hover:text-primary transition-colors" title="Panier">
+              <ShoppingCart className="w-6 h-6" />
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full border-2 border-white">
+                  {cartCount}
+                </span>
+              )}
             </Link>
-          </>
-        )}
+          )}
+          
+          {user ? (
+            <div className="flex items-center gap-4">
+              {user.role === 'artisan' && (
+                <Link to="/dashboard" className="text-gray-500 hover:text-primary transition-colors font-medium">
+                  Espace Artisans
+                </Link>
+              )}
+              <div className="flex items-center gap-2 text-gray-700 pl-4 border-l border-gray-200">
+                <Link to="/profile" className="flex items-center gap-2 hover:bg-gray-50 px-3 py-1.5 rounded-lg transition-colors group">
+                  <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-600 group-hover:bg-primary group-hover:text-white transition-colors">
+                    <User className="w-4 h-4" />
+                  </div>
+                  <span className="font-medium">{user.name}</span>
+                </Link>
+              </div>
+              <button 
+                onClick={handleLogout}
+                className="text-gray-500 hover:text-primary transition-colors flex items-center p-2 rounded-lg"
+                title="Se déconnecter"
+              >
+                <LogOut className="w-5 h-5" />
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-4">
+              <Link to="/login" className="text-gray-500 hover:text-primary transition-colors">Connexion</Link>
+              <Link to="/login?mode=register" className="bg-primary hover:bg-primary-hover text-white px-6 py-2.5 rounded-md font-medium transition-colors">
+                S'inscrire
+              </Link>
+            </div>
+          )}
+        </div>
       </div>
     </nav>
   );

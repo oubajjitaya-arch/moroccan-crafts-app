@@ -2,6 +2,8 @@ import React from 'react';
 import { Search, MapPin, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { cities } from '../data/cities';
+import { products } from '../data/products';
+import { calculateDynamicPrice } from '../utils/pricing';
 
 function Hero() {
   return (
@@ -64,6 +66,84 @@ function SearchSection() {
           <Link key={city} to={`/ville/${city.toLowerCase().replace('è', 'e').replace('é', 'e')}`} className="hover:text-primary border-b-2 border-transparent hover:border-primary pb-0.5 transition-all">
             {city}
           </Link>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function ProductsSection() {
+  return (
+    <section id="boutique" className="max-w-7xl mx-auto px-4 py-16 mb-20 border-t border-gray-100">
+      <div className="text-center mb-12">
+        <p className="text-primary font-bold tracking-widest text-sm uppercase mb-3">
+          BOUTIQUE ARTISANALE
+        </p>
+        <h2 className="text-4xl font-bold text-gray-900 mb-6">
+          Produits disponibles
+        </h2>
+        <p className="text-gray-600 max-w-2xl mx-auto">
+          Découvrez des produits artisanaux sélectionnés et leur disponibilité en stock.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {products.map((product) => (
+          <div key={product.id} className="group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-transform duration-300 hover:-translate-y-1 border border-gray-100 flex flex-col">
+            {/* Image Container */}
+            <div className="h-64 w-full bg-gray-50 overflow-hidden relative">
+              <img 
+                src={product.image || 'https://images.unsplash.com/photo-1510218830377-2e994ea9087d?auto=format&fit=crop&q=80&w=1000'} 
+                alt={product.title} 
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                referrerPolicy="no-referrer"
+              />
+              <div className="absolute top-4 left-4">
+                <span className="bg-white/90 backdrop-blur-xs text-primary font-medium text-xs px-3 py-1.5 rounded-full shadow-xs">
+                  Artisanal
+                </span>
+              </div>
+            </div>
+
+            {/* Product Body */}
+            <div className="p-6 flex flex-col flex-grow">
+              <h3 className="text-xl font-bold text-gray-900 mb-2 truncate">
+                {product.title}
+              </h3>
+              
+              <div className="flex justify-between items-baseline mb-4">
+                <div className="flex flex-col">
+                  <span className="text-lg font-bold text-primary">
+                    {calculateDynamicPrice(product.price, product.stock ?? 0)} DH
+                  </span>
+                  {(product.stock ?? 0) <= 5 && (
+                    <span className="text-[11px] text-primary/70 font-medium">Prix majoré (stock limité)</span>
+                  )}
+                </div>
+                {product.stock && (
+                  <span className="text-xs font-semibold px-2 py-1 rounded-sm bg-emerald-50 text-emerald-700">
+                    {product.stock} en stock
+                  </span>
+                )}
+              </div>
+
+              {product.description && (
+                <p className="text-gray-500 text-sm leading-relaxed mb-6 line-clamp-2">
+                  {product.description}
+                </p>
+              )}
+
+              {/* Action Button */}
+              <div className="mt-auto">
+                <Link 
+                  to={`/product/${product.id}`} 
+                  className="block w-full bg-primary hover:bg-primary-hover text-white text-center font-medium py-3 rounded-xl transition-all shadow-sm active:scale-[0.98]"
+                >
+                  Voir le produit
+                </Link>
+              </div>
+            </div>
+          </div>
         ))}
       </div>
     </section>
@@ -133,6 +213,7 @@ export default function Home() {
       <Hero />
       <SearchSection />
       <CitiesSection />
+      <ProductsSection />
     </>
   );
 }

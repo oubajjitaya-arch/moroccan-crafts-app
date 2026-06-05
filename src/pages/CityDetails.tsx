@@ -1,11 +1,42 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
-import { MapPin, ArrowLeft, Users, Star, MessageCircle } from 'lucide-react';
+import { MapPin, ArrowLeft, Users, Star, MessageCircle, Phone } from 'lucide-react';
 import { cities } from '../data/cities';
+
+interface Artisan {
+  id: string;
+  name: string;
+  craft: string;
+  cityId: string;
+  description: string;
+  phone: string;
+}
 
 export default function CityDetails() {
   const { id } = useParams<{ id: string }>();
   const city = cities.find(c => c.id === id);
+  const [artisans, setArtisans] = useState<Artisan[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchArtisans = async () => {
+      try {
+        const res = await fetch('/api/artisans');
+        const data = await res.json();
+        // Filter artisans by this city
+        const cityArtisans = data.filter((a: Artisan) => a.cityId === id);
+        setArtisans(cityArtisans);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    if (city) {
+      fetchArtisans();
+    }
+  }, [id, city]);
 
   if (!city) {
     return <Navigate to="/" replace />;
@@ -46,7 +77,7 @@ export default function CityDetails() {
 
       {/* Content Section */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 md:p-12">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 md:p-12 mb-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             
             {/* Left Column: Details */}
@@ -95,11 +126,50 @@ export default function CityDetails() {
 
               <button className="w-full bg-primary hover:bg-primary-hover text-white font-medium py-4 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-sm shadow-primary/20">
                 <MessageCircle className="w-5 h-5" />
-                Contacter un artisan
+                Démarrer une discussion
               </button>
             </div>
 
           </div>
+        </div>
+
+        {/* Artisans Section */}
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Artisans à {city.name}</h2>
+          {loading ? (
+            <div className="flex justify-center p-8">
+              <span className="text-gray-500">Chargement des artisans...</span>
+            </div>
+          ) : artisans.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {artisans.map(artisan => (
+                <div key={artisan.id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <h3 className="text-lg font-bold text-gray-900">{artisan.name}</h3>
+                      <span className="inline-block bg-rose-50 text-primary text-xs font-semibold px-2 py-1 rounded mt-1">
+                        {artisan.craft}
+                      </span>
+                    </div>
+                  </div>
+                  <p className="text-gray-600 text-sm mb-4 leading-relaxed line-clamp-3">
+                    {artisan.description}
+                  </p>
+                  <div className="flex items-center text-gray-500 text-sm">
+                    <Phone className="w-4 h-4 mr-2" />
+                    {artisan.phone || 'Non renseigné'}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center">
+              <p className="text-gray-500 mb-4">Aucun artisan n'est encore enregistré pour cette ville.</p>
+              <Link to="/login?mode=register" className="text-primary hover:text-primary-hover font-medium">
+                Vous êtes artisan ici ? Créez un compte.
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>
